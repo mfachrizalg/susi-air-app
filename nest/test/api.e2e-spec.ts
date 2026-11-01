@@ -300,7 +300,9 @@ describe('cors', () => {
       .set('Access-Control-Request-Method', 'POST')
       .set('Access-Control-Request-Headers', 'content-type')
       .expect(204);
-    expect(res.headers['access-control-allow-origin']).toBe('http://localhost:3000');
+    expect(res.headers['access-control-allow-origin']).toBe(
+      'http://localhost:3000',
+    );
     expect(res.headers['access-control-allow-credentials']).toBe('true');
   });
 

@@ -39,74 +39,36 @@ nuxt/      Web app: Nuxt 3 SPA, Pinia, SCSS, vue-echarts
 
 ## Requirements
 
-- Node 26.10.0 and pnpm 12.8.1 for running without Docker. These are the versions I tested. Other versions are untested.
-- Docker with Compose, for the one-command run below.
+- Node 26.10.0 and pnpm 12.8.1, only for the tests and checks below. These are the versions I tested. Other versions are untested.
+- Docker with Compose. This is all you need to run the app.
 
 ## Run with Docker
 
-Needs Docker with Compose. From the repo root:
+Run these steps in order.
 
-```sh
-docker compose up --build
-```
+1. Clone the repo and enter it:
+   ```sh
+   git clone https://github.com/mfachrizalg/susi-air-app.git
+   cd susi-air-app
+   ```
+2. Create your env file:
+   ```sh
+   cp .env.example .env
+   ```
+3. Build and start both apps:
+   ```sh
+   docker compose up --build
+   ```
+4. Open the apps:
+   - Web app: http://localhost:3000. Sign in with `johndoe` / `susiairtest`.
+   - API: http://localhost:3001. Swagger UI: http://localhost:3001/docs.
+5. Stop the stack with `docker compose down`.
 
-- Web app: http://localhost:3000. Sign in with `johndoe` / `susiairtest`.
-- API: http://localhost:3001. Swagger UI: http://localhost:3001/docs.
-
-The containers run the production builds. The demo defaults in `docker-compose.yml` let the stack start with no setup. Set your own secret before sharing it:
+The containers run the production builds. The demo defaults in `docker-compose.yml` let the stack start without edits to `.env`. Set your own secret before sharing it:
 
 ```sh
 JWT_SECRET=$(openssl rand -hex 32) docker compose up --build
 ```
-
-Stop the stack with `docker compose down`.
-
-## Set up and run
-
-### API (`nest/`)
-
-```sh
-cd nest
-pnpm install
-pnpm start:dev
-```
-
-- API: http://localhost:3001
-- Swagger UI: http://localhost:3001/docs
-
-### Web app (`nuxt/`)
-
-Start the API first. The web app sends `/api` requests to it.
-
-```sh
-cd nuxt
-pnpm install
-pnpm dev
-```
-
-- Web app: http://localhost:3000
-- Sign in with `johndoe` / `susiairtest`, the spec's test login.
-
-### Production build
-
-API:
-
-```sh
-cd nest
-pnpm build
-NODE_ENV=production JWT_SECRET=<long random string> LOGIN_USERNAME=johndoe LOGIN_PASSWORD=susiairtest PUBLIC_URL=<public API URL> pnpm start:prod
-```
-
-`start:prod` runs `node dist/main` and does not read `.env`. To load a file, run `node --env-file=.env dist/main` instead.
-
-Web app:
-
-```sh
-cd nuxt
-pnpm build
-```
-
-The output goes to `nuxt/.output`.
 
 ## Tests and checks
 
@@ -147,31 +109,25 @@ The API refuses to start in production if `JWT_SECRET`, `LOGIN_USERNAME`, or `LO
 
 No variables are needed for local development. The dev proxy in `nuxt/nuxt.config.ts` sends `/api` to `http://localhost:3001`. In production, `nuxt/vercel.json` rewrites `/api/*` to the Railway API. Docker sets `NUXT_PUBLIC_API_BASE=http://localhost:3001` so the app calls the API directly.
 
-### Playwright
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `BASE_URL` | `http://localhost:3000` | Site the smoke test runs against |
-
 ## Choices and reasons
 
-| Choice | Why | Source |
-|---|---|---|
-| The spec is the source of truth. Every dataset uses one reference date, 2026-05-15. | Where mock data disagrees with the spec, the spec wins. Fixed dates keep every chart and status repeatable. | Spec |
-| The API owns the reference date (`TODAY`), and `/pilot/me` returns it. | The frontend never builds its own date, so the two cannot drift apart. | Design choice |
-| Login sets an httpOnly, SameSite=Strict cookie. The API also accepts a Bearer header. | Page scripts cannot read the token, which limits damage from XSS. SameSite=Strict blocks cross-site requests. The Bearer header keeps Swagger and API clients working. | Design choice |
-| The web app and API share one origin. Vercel rewrites `/api/*` to Railway. | No CORS setup, and the cookie stays first-party. | Design choice |
-| Two independent packages, each with its own lockfile. No root workspace. | Railway deploys `nest/` and Vercel deploys `nuxt/`. Each builds on its own. | Design choice |
-| NestJS 12 with REST, one response envelope, and Swagger. | The envelope, the exception filter, and validation fit REST. Swagger documents the API for people and tools. | Design choice |
-| The web app uses typed API responses from the committed `nuxt/types/api.d.ts`. | Gives the web code typed responses. Nothing regenerates the file yet. | Design choice |
-| Data stays in memory, loaded from three JSON files at startup. No database. | The data is read-only mock data. A database adds setup with no benefit at this scope. Trade-off: nothing can be written. | Spec |
-| Nuxt 3 as an SPA (`ssr: false`), with SCSS and Pinia. | The spec names Nuxt 3, SCSS, and Pinia. Every page sits behind login, so server rendering brings no SEO gain. | Spec |
-| The chart uses vue-echarts with the SVG renderer. | SVG stays sharp at any screen density. Bars and the limit line are SVG elements, so they can be inspected in the DOM and tested. | Design choice |
-| All bars share one accent colour. Only the dashed red limit line marks a breach. | A breach shows on the line alone. No colour has a second meaning. | Design choice |
-| Future chart points use planned hours, drawn lighter with a "Projected" caption. | Planned hours are not logged hours. The caption keeps the chart honest. | Design choice |
-| Weeks start on Sunday. | The spec does not set the first day of the week. | Design choice |
-| Production refuses to start without `JWT_SECRET`, `LOGIN_USERNAME`, or `LOGIN_PASSWORD`. | No silent insecure default. | Design choice |
-| Docker Compose runs the production builds. The web container runs the Node server, and the API allows the web origin with CORS (credentials). | One command runs both apps. Production stays same-origin through the Vercel rewrite, so the cookie stays first-party there. | Design choice |
+| Choice | Why |
+|---|---|
+| The spec is the source of truth. Every dataset uses one reference date, 2026-05-15. | Where mock data disagrees with the spec, the spec wins. Fixed dates keep every chart and status repeatable. |
+| The API owns the reference date (`TODAY`), and `/pilot/me` returns it. | The frontend never builds its own date, so the two cannot drift apart. |
+| Login sets an httpOnly, SameSite=Strict cookie. The API also accepts a Bearer header. | Page scripts cannot read the token, which limits damage from XSS. SameSite=Strict blocks cross-site requests. The Bearer header keeps Swagger and API clients working. |
+| The web app and API share one origin. Vercel rewrites `/api/*` to Railway. | No CORS setup, and the cookie stays first-party. |
+| Two independent packages, each with its own lockfile. No root workspace. | Railway deploys `nest/` and Vercel deploys `nuxt/`. Each builds on its own. |
+| NestJS 12 with REST, one response envelope, and Swagger. | The envelope, the exception filter, and validation fit REST. Swagger documents the API for people and tools. |
+| The web app uses typed API responses from the committed `nuxt/types/api.d.ts`. | Gives the web code typed responses. Nothing regenerates the file yet. |
+| Data stays in memory, loaded from three JSON files at startup. No database. | The data is read-only mock data. A database adds setup with no benefit at this scope. Trade-off: nothing can be written. |
+| Nuxt 3 as an SPA (`ssr: false`), with SCSS and Pinia. | The spec names Nuxt 3, SCSS, and Pinia. Every page sits behind login, so server rendering brings no SEO gain. |
+| The chart uses vue-echarts with the SVG renderer. | SVG stays sharp at any screen density. Bars and the limit line are SVG elements, so they can be inspected in the DOM and tested. |
+| All bars share one accent colour. Only the dashed red limit line marks a breach. | A breach shows on the line alone. No colour has a second meaning. |
+| Future chart points use planned hours, drawn lighter with a "Projected" caption. | Planned hours are not logged hours. The caption keeps the chart honest. |
+| Weeks start on Sunday. | The spec does not set the first day of the week. |
+| Production refuses to start without `JWT_SECRET`, `LOGIN_USERNAME`, or `LOGIN_PASSWORD`. | No silent insecure default. |
+| Docker Compose runs the production builds. The web container runs the Node server, and the API allows the web origin with CORS (credentials). | One command runs both apps. Production stays same-origin through the Vercel rewrite, so the cookie stays first-party there. |
 
 ## What I would change
 
@@ -183,11 +139,3 @@ No variables are needed for local development. The dev proxy in `nuxt/nuxt.confi
 6. **Pin Node and replace placeholders.** Production runs Node 24.22.0, the platform default, but I tested on Node 26.10.0. Pin Node in both `package.json` files (pnpm is already pinned). Replace the placeholder avatar (`nest/assets/avatar.svg`, a navy "JD" badge) with a real photo.
 7. **Keep the API awake.** The Railway service has `sleepApplication` on, so it sleeps when idle and the first request after a pause is slow. Turn it off in Railway if that matters.
 8. **Regenerate the web types in CI.** `/docs-json` is off, so nothing regenerates `nuxt/types/api.d.ts`. A CI step should fail when the committed types drift from the API.
-
-## Deploy
-
-- **API on Railway** (`nest/`, project `outstanding-learning`, service `nest`, production). Build: `pnpm install` with dev dependencies, then `pnpm run build`. Start: `node dist/main`. Variables: `NODE_ENV=production`, `JWT_SECRET` (random, set in Railway only), `LOGIN_USERNAME`, `LOGIN_PASSWORD`, `PUBLIC_URL`.
-- **Web app on Vercel** (`nuxt/`, project `susi-air-web`). `nuxt/vercel.json` rewrites `/api/*` to the Railway API.
-- **Redeploy:** `cd nest && railway up --service nest --environment production --ci` and `cd nuxt && vercel deploy --prod`.
-- **pnpm pin:** both `package.json` files set `packageManager` to `pnpm@12.8.1`. Without it, Railway built with pnpm 9.15.9, which rejects `pnpm-workspace.yaml`.
-- **Smoke test against the live site:** `cd nuxt && BASE_URL=https://susi-air-web.vercel.app pnpm test:e2e`.

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsIn, Matches } from 'class-validator';
-import type { LimitKey, RangeKey } from '../data/data.service.js';
+import type { LimitKey, RangeKey } from '../../data/data.service.js';
 
 export const RANGES = ['1w', '1m', '3m', '6m', '1y'] as const;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;

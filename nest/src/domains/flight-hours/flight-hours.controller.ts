@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiCookieAuth } from '@nestjs/swagger';
-import { ApiEnvelope } from '../common/api-envelope.decorators.js';
+import { ApiEnvelope } from '../../common/api-envelope.decorators.js';
 import {
   FlightHourDto,
   FlightHoursQueryDto,

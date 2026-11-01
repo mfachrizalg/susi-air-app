@@ -1,0 +1,21 @@
+services:
+  api:
+    build: ./nest
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      JWT_SECRET: ${JWT_SECRET:-docker-demo-secret-change-me}
+      LOGIN_USERNAME: ${LOGIN_USERNAME:-johndoe}
+      LOGIN_PASSWORD: ${LOGIN_PASSWORD:-susiairtest}
+      PUBLIC_URL: http://localhost:3001
+      COOKIE_SECURE: "false"
+      CORS_ORIGINS: http://localhost:3000
+
+  web:
+    build: ./nuxt
+    ports:
+      - "3000:3000"
+    environment:
+      NUXT_PUBLIC_API_BASE: http://localhost:3001

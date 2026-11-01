@@ -1,6 +1,6 @@
 # Susi Air Pilot App: API (`nest/`)
 
-Root docs: `../README.md`. Source of truth: `../AGENTS.md`.
+Root docs: `../README.md`.
 
 ```sh
 pnpm install     # install this package's dependencies

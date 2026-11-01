@@ -1,0 +1,11 @@
+node_modules
+.nuxt
+.output
+.data
+.vercel
+test-results
+playwright-report
+e2e
+.env
+.env.local
+AGENTS.md

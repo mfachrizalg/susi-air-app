@@ -8,9 +8,9 @@ import {
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { ApiEnvelope } from '../common/api-envelope.decorators.js';
-import { Public } from '../common/public.decorator.js';
-import { type AppConfig, CONFIG, TOKEN_COOKIE } from '../config.js';
+import { ApiEnvelope } from '../../common/api-envelope.decorators.js';
+import { Public } from '../../common/public.decorator.js';
+import { type AppConfig, CONFIG, TOKEN_COOKIE } from '../../config.js';
 import { AuthService } from './auth.service.js';
 import { LoginDto, LoginResultDto } from './login.dto.js';
 

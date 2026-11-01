@@ -17,6 +17,8 @@ export interface AppConfig {
   cookieSecure: boolean;
   loginUsername: string;
   loginPassword: string;
+  /** Browser origins allowed to call the API with credentials (CORS). */
+  corsOrigins: string[];
 }
 
 const DEFAULT_TODAY = '2026-05-15';
@@ -40,6 +42,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     throw new Error(
       'LOGIN_USERNAME and LOGIN_PASSWORD are required when NODE_ENV=production',
     );
+  const corsOrigins = (env.CORS_ORIGINS || 'http://localhost:3000')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
   return {
     port,
     today,
@@ -52,5 +58,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     cookieSecure: env.COOKIE_SECURE ? env.COOKIE_SECURE === 'true' : production,
     loginUsername,
     loginPassword,
+    corsOrigins,
   };
 }

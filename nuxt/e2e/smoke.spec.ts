@@ -57,7 +57,7 @@ test('schedule opens on May 2026 with Sunday as the first column', async ({ page
 
 test('previous month shows April and requests month 04', async ({ page }) => {
   await openSchedule(page);
-  const request = page.waitForRequest((req) => req.url().includes('/api/schedules?year=2026&month=04'));
+  const request = page.waitForRequest((req) => req.url().includes('/schedules?year=2026&month=04'));
   await page.getByRole('button', { name: 'Previous month' }).click();
   await request;
   await expect(page.getByRole('heading', { name: 'April 2026' })).toBeVisible();

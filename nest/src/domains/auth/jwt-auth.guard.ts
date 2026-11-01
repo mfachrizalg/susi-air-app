@@ -7,8 +7,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
-import { IS_PUBLIC_KEY } from '../common/public.decorator.js';
-import { TOKEN_COOKIE } from '../config.js';
+import { IS_PUBLIC_KEY } from '../../common/public.decorator.js';
+import { TOKEN_COOKIE } from '../../config.js';
 
 /** Global guard. Accepts the httpOnly `token` cookie or an `Authorization: Bearer` header. */
 @Injectable()

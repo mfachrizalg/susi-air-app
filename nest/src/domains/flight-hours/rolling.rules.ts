@@ -1,4 +1,4 @@
-import { addDays } from '../common/dates.js';
+import { addDays } from '../../common/dates.js';
 
 /** Chart points run from today-7 to today+7: 15 bars. */
 export const HALF_SPAN_DAYS = 7;

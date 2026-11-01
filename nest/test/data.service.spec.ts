@@ -11,7 +11,8 @@ vi.mock('node:fs', async (importOriginal) => {
 describe('DataService boot', () => {
   it('throws at construction when a required key is missing from a data file', () => {
     const real = vi.mocked(readFileSync).getMockImplementation();
-    if (!real) throw new Error('readFileSync has no pass-through implementation');
+    if (!real)
+      throw new Error('readFileSync has no pass-through implementation');
     vi.mocked(readFileSync).mockImplementation((file, encoding) => {
       const json = JSON.parse(real(file, encoding) as string);
       if (String(file).endsWith('mock-documents.json')) delete json.thresholds;

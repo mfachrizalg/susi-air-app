@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-11-01',
   ssr: false,
   modules: ['@pinia/nuxt'],
+  runtimeConfig: {
+    public: {
+      // Same origin in dev (devProxy) and on Vercel (rewrite). Docker sets NUXT_PUBLIC_API_BASE.
+      apiBase: '/api',
+    },
+  },
   css: ['~/assets/scss/main.scss'],
   vite: {
     css: {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataService } from '../data/data.service.js';
+import { DataService } from '../../data/data.service.js';
 import { SchedulesDto } from './schedules.dto.js';
 import { dutyLabel, remainingDuties } from './schedule.rules.js';
 

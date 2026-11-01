@@ -292,12 +292,38 @@ describe('schedules', () => {
   });
 });
 
-describe('openapi', () => {
-  it('publishes the cookie and bearer security schemes at /docs', async () => {
-    const res = await api().get('/docs-json').expect(200);
-    expect(res.body.components.securitySchemes).toMatchObject({
-      cookie: { type: 'apiKey', in: 'cookie', name: 'token' },
-      bearer: { type: 'http', scheme: 'bearer' },
-    });
+describe('cors', () => {
+  it('lets the web origin call the API with credentials', async () => {
+    const res = await api()
+      .options('/auth/login')
+      .set('Origin', 'http://localhost:3000')
+      .set('Access-Control-Request-Method', 'POST')
+      .set('Access-Control-Request-Headers', 'content-type')
+      .expect(204);
+    expect(res.headers['access-control-allow-origin']).toBe('http://localhost:3000');
+    expect(res.headers['access-control-allow-credentials']).toBe('true');
+  });
+
+  it('gives no CORS header to other origins', async () => {
+    const res = await api()
+      .post('/auth/login')
+      .set('Origin', 'http://evil.example')
+      .send(credentials)
+      .expect(200);
+    expect(res.headers['access-control-allow-origin']).toBeUndefined();
+  });
+});
+
+describe('swagger', () => {
+  it('serves the UI at /docs with the cookie and bearer security schemes', async () => {
+    await api().get('/docs').expect(200);
+    const init = await api().get('/docs/swagger-ui-init.js').expect(200);
+    expect(init.text).toContain('"securitySchemes"');
+    expect(init.text).toContain('"cookie"');
+    expect(init.text).toContain('"bearer"');
+  });
+
+  it('no longer serves the raw OpenAPI document at /docs-json', async () => {
+    await api().get('/docs-json').expect(404);
   });
 });

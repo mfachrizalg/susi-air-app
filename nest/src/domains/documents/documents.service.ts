@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { type AppConfig, CONFIG } from '../config.js';
-import { DataService } from '../data/data.service.js';
+import { type AppConfig, CONFIG } from '../../config.js';
+import { DataService } from '../../data/data.service.js';
 import { documentStatus } from './document.rules.js';
 import { DocumentsDto } from './documents.dto.js';
 

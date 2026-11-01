@@ -2,9 +2,15 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { loadConfig } from '../src/config.js';
 import { addDays, daysBetween, isIsoDate } from '../src/common/dates.js';
-import { documentStatus } from '../src/documents/document.rules.js';
-import { rollingSeries, windowSum } from '../src/flight-hours/rolling.rules.js';
-import { dutyLabel, remainingDuties } from '../src/schedules/schedule.rules.js';
+import { documentStatus } from '../src/domains/documents/document.rules.js';
+import {
+  rollingSeries,
+  windowSum,
+} from '../src/domains/flight-hours/rolling.rules.js';
+import {
+  dutyLabel,
+  remainingDuties,
+} from '../src/domains/schedules/schedule.rules.js';
 
 const TODAY = '2026-05-15';
 const read = (name: string) =>
@@ -137,7 +143,11 @@ describe('loadConfig', () => {
       'LOGIN_USERNAME and LOGIN_PASSWORD are required',
     );
     expect(
-      loadConfig({ ...production, LOGIN_USERNAME: 'ops', LOGIN_PASSWORD: 'pw' }),
+      loadConfig({
+        ...production,
+        LOGIN_USERNAME: 'ops',
+        LOGIN_PASSWORD: 'pw',
+      }),
     ).toMatchObject({ loginUsername: 'ops', loginPassword: 'pw' });
     expect(loadConfig({})).toMatchObject({
       loginUsername: 'johndoe',

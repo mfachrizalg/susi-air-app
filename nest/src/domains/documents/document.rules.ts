@@ -1,4 +1,4 @@
-import { daysBetween } from '../common/dates.js';
+import { daysBetween } from '../../common/dates.js';
 
 export type ExpiryStatus = 'safe' | 'soon' | 'expired';
 

@@ -3,8 +3,10 @@ const isEnvelope = (body: unknown): body is { data: unknown } =>
   typeof body === 'object' && body !== null && 'data' in body;
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const config = useRuntimeConfig();
   const api = $fetch.create({
-    baseURL: '/api',
+    baseURL: config.public.apiBase,
+    credentials: 'include',
     onResponse({ response }) {
       // Also runs for error responses, so unwrap success bodies only. Error bodies keep `message`.
       if (response.ok && isEnvelope(response._data)) {

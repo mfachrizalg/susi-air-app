@@ -1,11 +1,11 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { addDays, daysBetween, isIsoDate } from '../common/dates.js';
-import { type AppConfig, CONFIG } from '../config.js';
+import { addDays, daysBetween, isIsoDate } from '../../common/dates.js';
+import { type AppConfig, CONFIG } from '../../config.js';
 import {
   DataService,
   type LimitKey,
   type RangeKey,
-} from '../data/data.service.js';
+} from '../../data/data.service.js';
 import {
   FlightHourDto,
   FlightHoursSummaryDto,

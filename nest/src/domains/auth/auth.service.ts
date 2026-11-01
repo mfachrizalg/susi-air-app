@@ -1,7 +1,7 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { createHash, timingSafeEqual } from 'node:crypto';
-import { type AppConfig, CONFIG } from '../config.js';
+import { type AppConfig, CONFIG } from '../../config.js';
 
 // Hashing both sides gives equal-length buffers, which timingSafeEqual requires.
 const digest = (value: string): Buffer =>

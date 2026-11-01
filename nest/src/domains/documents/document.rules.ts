@@ -2,7 +2,6 @@ import { daysBetween } from '../../common/dates.js';
 
 export type ExpiryStatus = 'safe' | 'soon' | 'expired';
 
-/** Expired at 0 or fewer days, soon within the warning window, otherwise safe (D7). */
 export function documentStatus(
   expiryDate: string,
   today: string,

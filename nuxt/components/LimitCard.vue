@@ -7,7 +7,7 @@ type Card = components['schemas']['SummaryCardDto'];
 const props = defineProps<{ card: Card }>();
 
 const percent = computed(() => Math.min(100, (props.card.hours / props.card.limit) * 100));
-// Danger only above the limit. Exactly at the limit is not over.
+
 const over = computed(() => props.card.hours > props.card.limit);
 </script>
 
@@ -50,7 +50,6 @@ const over = computed(() => props.card.hours > props.card.limit);
   color: $color-text-secondary;
 }
 
-// Value and limit stack, so all four cards line up at 390 px.
 .limit__value {
   display: flex;
   flex-direction: column;

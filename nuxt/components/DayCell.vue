@@ -10,7 +10,6 @@ const props = defineProps<{ date: string | null; row?: ScheduleRow; isToday: boo
 const NAVY = '#0e2138';
 const WHITE = '#ffffff';
 
-// WCAG relative luminance, for contrast text on base_color.
 const channel = (hex: string, offset: number) => {
   const c = parseInt(hex.slice(offset, offset + 2), 16) / 255;
   return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
@@ -18,7 +17,6 @@ const channel = (hex: string, offset: number) => {
 const luminance = (hex: string) => 0.2126 * channel(hex, 1) + 0.7152 * channel(hex, 3) + 0.0722 * channel(hex, 5);
 const contrast = (a: number, b: number) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
-// Navy or white text, whichever contrasts more with the cell colour.
 const textOn = (hex: string) => {
   const bg = luminance(hex);
   return contrast(bg, luminance(NAVY)) >= contrast(bg, luminance(WHITE)) ? NAVY : WHITE;
@@ -83,7 +81,6 @@ const linkLabel = computed(() => {
   }
 }
 
-// Today is outlined with a brand ring.
 .cell--today .cell__link {
   box-shadow: 0 0 0 2px $color-card, 0 0 0 4px $color-brand;
 }

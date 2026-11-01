@@ -15,7 +15,6 @@ async function submit() {
   submitting.value = true;
   error.value = null;
   try {
-    // The server sets the httpOnly `token` cookie. This page never reads the token.
     await api<LoginResult>('/auth/login', {
       method: 'POST',
       body: { username: username.value, password: password.value },

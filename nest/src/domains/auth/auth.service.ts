@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { type AppConfig, CONFIG } from '../../config.js';
 
-// Hashing both sides gives equal-length buffers, which timingSafeEqual requires.
 const digest = (value: string): Buffer =>
   createHash('sha256').update(value).digest();
 const same = (given: string, expected: string): boolean =>
@@ -12,7 +11,6 @@ const same = (given: string, expected: string): boolean =>
 export interface Session {
   token: string;
   expiresAt: string;
-  /** Token lifetime in ms, used as the cookie Max-Age. */
   maxAgeMs: number;
 }
 
@@ -24,7 +22,6 @@ export class AuthService {
   ) {}
 
   async login(username: string, password: string): Promise<Session> {
-    // Both comparisons always run, so timing does not reveal which field was wrong.
     const userOk = same(username, this.config.loginUsername);
     const passOk = same(password, this.config.loginPassword);
     if (!userOk || !passOk)

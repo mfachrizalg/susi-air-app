@@ -22,20 +22,29 @@ afterAll(async () => {
   await app?.close();
 });
 
-/** Logs in and returns the bearer token plus the `token=...` cookie pair. */
 async function login(): Promise<{ token: string; cookie: string }> {
   const res = await api().post('/auth/login').send(credentials).expect(200);
   const setCookie: string = res.headers['set-cookie'][0];
   return { token: res.body.data.token, cookie: setCookie.split(';')[0] };
 }
 
+describe('root', () => {
+  it('health check at / needs no token and returns the welcome message', async () => {
+    const res = await api().get('/').expect(200);
+    expect(res.body).toEqual({
+      status: 'success',
+      message: 'Welcome to Susi Air API',
+      data: {},
+    });
+  });
+});
+
 describe('auth', () => {
   it('login returns the token envelope and sets an httpOnly, SameSite=Strict cookie for 8h', async () => {
     const res = await api().post('/auth/login').send(credentials).expect(200);
     expect(res.body).toMatchObject({
-      success: true,
-      statusCode: 200,
-      message: 'OK',
+      status: 'success',
+      message: 'Request processed successfully',
       data: { token: expect.any(String), expiresAt: expect.any(String) },
     });
     const attrs = (res.headers['set-cookie'][0] as string)
@@ -54,12 +63,11 @@ describe('auth', () => {
       .send({ ...credentials, password: 'wrong' })
       .expect(401);
     expect(res.body).toMatchObject({
-      success: false,
-      statusCode: 401,
+      status: 'error',
+      code: 401,
       message: 'Invalid username or password',
-      path: '/auth/login',
+      errors: null,
     });
-    expect(typeof res.body.timestamp).toBe('string');
   });
 
   it('an empty field returns 400 with an errors list', async () => {
@@ -68,8 +76,8 @@ describe('auth', () => {
       .send({ username: '', password: 'x' })
       .expect(400);
     expect(res.body).toMatchObject({
-      success: false,
-      statusCode: 400,
+      status: 'error',
+      code: 400,
       message: 'Validation failed',
     });
     expect(res.body.errors.length).toBeGreaterThan(0);
@@ -78,9 +86,8 @@ describe('auth', () => {
   it('a guarded route without a token returns 401 with the envelope', async () => {
     const res = await api().get('/pilot/me').expect(401);
     expect(res.body).toMatchObject({
-      success: false,
-      statusCode: 401,
-      path: '/pilot/me',
+      status: 'error',
+      code: 401,
     });
   });
 
@@ -103,8 +110,8 @@ describe('auth', () => {
       .set('Authorization', 'Bearer abc.def.ghi')
       .expect(401);
     expect(res.body).toMatchObject({
-      success: false,
-      statusCode: 401,
+      status: 'error',
+      code: 401,
       message: 'Invalid or expired token',
     });
   });

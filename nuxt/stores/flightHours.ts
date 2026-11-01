@@ -12,7 +12,6 @@ export const useFlightHoursStore = defineStore('flightHours', () => {
   const error = ref<string | null>(null);
   let latest = 0;
 
-  /** Loads one range. Only the newest request writes state, so a fast toggle cannot show stale data. */
   async function load(next: Range = range.value) {
     const id = ++latest;
     range.value = next;

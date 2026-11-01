@@ -7,7 +7,6 @@ import { monthTitle } from '~/utils/format';
 const pilot = usePilotStore();
 const schedule = useScheduleStore();
 
-// Open on the month of today from /pilot/me. Later visits keep the month the user last saw.
 if (schedule.year === null && pilot.profile) {
   const [year, month] = pilot.profile.today.split('-').map(Number);
   void schedule.show(year, month);

@@ -1,15 +1,11 @@
-/** Injection token for the loaded configuration. */
 export const CONFIG = 'CONFIG';
 
-/** Name of the httpOnly cookie that carries the JWT. */
 export const TOKEN_COOKIE = 'token';
 
-/** A jsonwebtoken duration such as 8h, 30m or 3600s. */
 export type JwtTtl = `${number}${'s' | 'm' | 'h' | 'd'}`;
 
 export interface AppConfig {
   port: number;
-  /** Reference date for every rule (D9). Never read from the system clock. */
   today: string;
   jwtSecret: string;
   jwtTtl: JwtTtl;
@@ -17,7 +13,6 @@ export interface AppConfig {
   cookieSecure: boolean;
   loginUsername: string;
   loginPassword: string;
-  /** Browser origins allowed to call the API with credentials (CORS). */
   corsOrigins: string[];
 }
 

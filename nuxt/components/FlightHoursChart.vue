@@ -51,7 +51,6 @@ const option = computed<EChartsOption>(() => {
       {
         type: 'bar',
         barMaxWidth: 16,
-        // Projected points are planned hours, so they render lighter.
         data: summary.points.map((point) => ({
           value: point.hours,
           itemStyle: { color: ACCENT, opacity: point.projected ? 0.4 : 1 },
@@ -60,7 +59,6 @@ const option = computed<EChartsOption>(() => {
           symbol: 'none',
           silent: true,
           lineStyle: { type: 'dashed', color: DANGER, width: 2 },
-          // The limit value is in the key under the chart, so the line carries no label.
           label: { show: false },
           data: [{ yAxis: summary.limit }],
         },
@@ -100,7 +98,6 @@ const option = computed<EChartsOption>(() => {
           Limit {{ store.summary.limit }} h
         </li>
       </ul>
-      <!-- Wrapped so the clipped table cannot widen the page. -->
       <div class="sr-only">
         <table>
           <caption>

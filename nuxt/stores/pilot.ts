@@ -24,7 +24,6 @@ export const usePilotStore = defineStore('pilot', () => {
     }
   }
 
-  /** Fetches the profile once. Rejects on failure so the auth middleware can read the status. */
   function load() {
     if (profile.value) return Promise.resolve();
     pending ??= fetchProfile();

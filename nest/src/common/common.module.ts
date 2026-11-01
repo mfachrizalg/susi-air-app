@@ -5,7 +5,6 @@ import { CONFIG, loadConfig } from '../config.js';
 import { EnvelopeInterceptor } from './envelope.interceptor.js';
 import { HttpExceptionFilter } from './http-exception.filter.js';
 
-/** Global wiring: the config, the envelope and error filter, and the auth guard (which uses the global JwtModule). */
 @Global()
 @Module({
   providers: [

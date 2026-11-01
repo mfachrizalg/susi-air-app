@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { AppController } from './app.controller.js';
 import { AuthModule } from './domains/auth/auth.module.js';
 import { CommonModule } from './common/common.module.js';
 import { type AppConfig, CONFIG } from './config.js';
@@ -9,7 +10,6 @@ import { FlightHoursModule } from './domains/flight-hours/flight-hours.module.js
 import { PilotModule } from './domains/pilot/pilot.module.js';
 import { SchedulesModule } from './domains/schedules/schedules.module.js';
 
-/** Composition root. Global wiring comes from CommonModule, DataModule and the global JwtModule. */
 @Module({
   imports: [
     JwtModule.registerAsync({
@@ -29,5 +29,6 @@ import { SchedulesModule } from './domains/schedules/schedules.module.js';
     DocumentsModule,
     SchedulesModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

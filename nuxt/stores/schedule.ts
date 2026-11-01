@@ -13,7 +13,6 @@ export const useScheduleStore = defineStore('schedule', () => {
   const error = ref<string | null>(null);
   let latest = 0;
 
-  /** Shows one month. Only the newest request writes state. */
   async function show(nextYear: number, nextMonth: number) {
     const id = ++latest;
     year.value = nextYear;

@@ -2,5 +2,4 @@ import { SetMetadata } from '@nestjs/common';
 
 export const IS_PUBLIC_KEY = 'isPublic';
 
-/** Marks a route as open to anonymous callers. The global JwtAuthGuard skips it. */
 export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);

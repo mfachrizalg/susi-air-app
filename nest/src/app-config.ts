@@ -13,7 +13,6 @@ export const swaggerDocument = () =>
     .addBearerAuth()
     .build();
 
-/** Shared by main.ts and the e2e tests, so both get the same pipes, cookies and routes. */
 export function configureApp(app: NestExpressApplication): void {
   const { corsOrigins } = app.get<AppConfig>(CONFIG);
   app.enableCors({

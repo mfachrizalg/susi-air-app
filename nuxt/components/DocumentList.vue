@@ -12,7 +12,6 @@ void documents.load();
 const STATUS_ICON = { safe: CircleCheck, soon: CircleAlert, expired: CircleX } as const;
 const STATUS_TEXT: Record<Status, string> = { safe: 'Safe', soon: 'Soon', expired: 'Expired' };
 
-// The API sends days remaining. A negative value means the document has expired.
 const remaining = (days: number) => {
   if (days === 0) return 'Expires today';
   if (days > 0) return `${days} ${days === 1 ? 'day' : 'days'} remaining`;
@@ -92,7 +91,6 @@ const remaining = (days: number) => {
   color: $color-text-secondary;
 }
 
-// Status uses a tint, an icon, and text. Colour is never the only cue.
 .badge {
   display: inline-flex;
   flex-shrink: 0;

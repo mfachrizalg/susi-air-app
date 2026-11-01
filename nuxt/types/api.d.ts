@@ -105,11 +105,9 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         EnvelopeDoc: {
-            /** @example true */
-            success: boolean;
-            /** @example 200 */
-            statusCode: number;
-            /** @example OK */
+            /** @example success */
+            status: string;
+            /** @example Request processed successfully */
             message: string;
         };
         LoginResultDto: {

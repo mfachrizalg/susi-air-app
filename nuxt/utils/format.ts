@@ -12,20 +12,16 @@ const parts = (iso: string) => {
   return { year, month, day };
 };
 
-/** 1444.5 becomes "1,444.5". */
 export const formatHours = (value: number) =>
   value.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
-/** 1050 becomes "1,050". */
 export const formatLimit = (value: number) => value.toLocaleString('en-US');
 
-/** "2026-05-15" becomes "15 May 2026". */
 export const formatDate = (iso: string) => {
   const { year, month, day } = parts(iso);
   return `${day} ${MONTHS[month - 1].slice(0, 3)} ${year}`;
 };
 
-/** "2026-05-08" becomes "8". */
 export const dayOfMonth = (iso: string) => String(parts(iso).day);
 
 export const monthTitle = (year: number, month: number) => `${MONTHS[month - 1]} ${year}`;
@@ -47,7 +43,6 @@ const weekday = (year: number, month: number, day: number) => {
   return (y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) + WEEKDAY_OFFSET[month - 1] + day) % 7;
 };
 
-/** Sunday-first weeks of a month. Null marks a cell outside the month. */
 export const monthWeeks = (year: number, month: number) => {
   const cells: (string | null)[] = Array.from({ length: weekday(year, month, 1) }, () => null);
   for (let day = 1; day <= daysInMonth(year, month); day += 1) {
@@ -59,7 +54,6 @@ export const monthWeeks = (year: number, month: number) => {
   return weeks;
 };
 
-/** Moves a year and month by whole months. */
 export const shiftMonth = (year: number, month: number, delta: number) => {
   const index = year * 12 + (month - 1) + delta;
   return { year: Math.floor(index / 12), month: (index % 12) + 1 };

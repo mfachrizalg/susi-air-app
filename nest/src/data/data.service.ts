@@ -58,7 +58,6 @@ interface FlightHoursFile {
 
 const DATA_DIR = new URL('../../data/', import.meta.url);
 
-/** Keys the rules read. Boot fails when one is missing, so a bad data file never serves requests. */
 const REQUIRED = {
   'mock-schedules.json': ['legend', 'schedules'],
   'mock-documents.json': ['thresholds.warningDays', 'documents'],
@@ -94,7 +93,6 @@ function loadFile<T>(name: keyof typeof REQUIRED): T {
   return json as T;
 }
 
-/** Loads the three mock files once, at construction. Every getter is read-only. */
 @Injectable()
 export class DataService {
   private readonly schedulesFile = loadFile<SchedulesFile>(

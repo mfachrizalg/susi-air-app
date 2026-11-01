@@ -13,10 +13,8 @@ import {
 } from './flight-hours.dto.js';
 import { rollingSeries, windowSum } from './rolling.rules.js';
 
-/** Longest `/flight-hours` span, counted inclusively (a leap year is 366 days). */
 const MAX_SPAN_DAYS = 366;
 
-/** Limit cards: each sums the days ending on today. */
 const CARDS: Record<LimitKey, { label: string; days: number }> = {
   daily: { label: 'Daily', days: 1 },
   weekly: { label: 'Weekly', days: 7 },

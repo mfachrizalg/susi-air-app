@@ -11,7 +11,6 @@ const props = defineProps<{
   today: string | null;
 }>();
 
-// Blank cells get unique keys so Vue can track every cell of the grid.
 const weeks = computed(() =>
   monthWeeks(props.year, props.month).map((week, row) =>
     week.map((date, column) => ({ key: date ?? `blank-${row}-${column}`, date })),

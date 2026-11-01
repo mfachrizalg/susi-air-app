@@ -7,17 +7,13 @@ import {
 } from '@nestjs/swagger';
 
 export class EnvelopeDoc {
-  @ApiProperty({ example: true })
-  success!: boolean;
+  @ApiProperty({ example: 'success' })
+  status!: string;
 
-  @ApiProperty({ example: 200 })
-  statusCode!: number;
-
-  @ApiProperty({ example: 'OK' })
+  @ApiProperty({ example: 'Request processed successfully' })
   message!: string;
 }
 
-/** Documents the success envelope. `array: true` means `data` is a list of `model`. */
 export function ApiEnvelope(model: Type<unknown>, { array = false } = {}) {
   const data = array
     ? { type: 'array', items: { $ref: getSchemaPath(model) } }

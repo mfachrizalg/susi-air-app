@@ -1,6 +1,7 @@
 {
   "name": "susi-air-pilot-nuxt",
   "private": true,
+  "packageManager": "pnpm@12.8.1",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",

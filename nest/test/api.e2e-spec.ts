@@ -255,7 +255,7 @@ describe('schedules', () => {
     });
   });
 
-  it('June 2026 row 97041 is labelled TRX and keeps its base_color', async () => {
+  it('June 2026 row 97041 is labelled TX and keeps its base_color', async () => {
     const { cookie } = await login();
     const res = await api()
       .get('/schedules?year=2026&month=06')
@@ -265,7 +265,7 @@ describe('schedules', () => {
     expect(
       res.body.data.schedules.find((s: { id: string }) => s.id === '97041'),
     ).toMatchObject({
-      label: 'TRX',
+      label: 'TX',
       base_color: '#FBA577',
     });
   });

@@ -225,7 +225,7 @@ export interface components {
             documents: components["schemas"]["DocumentDto"][];
         };
         LegendEntryDto: {
-            /** @example TRX */
+            /** @example TX */
             code: string;
             /** @example Training */
             label: string;
@@ -252,7 +252,7 @@ export interface components {
              * @example #10B981
              */
             base_color: string;
-            /** @example DTY */
+            /** @example DUTY */
             duty_type: string;
             /**
              * @description Planned flights or duties for the day.
@@ -265,7 +265,7 @@ export interface components {
              */
             count_logbooks: number;
             /**
-             * @description base_name on DTY days, duty_type otherwise.
+             * @description base_name on DUTY days, duty_type otherwise.
              * @example MKW
              */
             label: string;

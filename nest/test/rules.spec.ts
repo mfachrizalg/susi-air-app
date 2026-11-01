@@ -10,6 +10,7 @@ import {
 import {
   dutyLabel,
   remainingDuties,
+  specDutyCode,
 } from '../src/domains/schedules/schedule.rules.js';
 
 const TODAY = '2026-05-15';
@@ -97,15 +98,24 @@ describe('rolling sums', () => {
 });
 
 describe('schedule rules', () => {
-  it('labels DTY days with the base and other days with the duty type', () => {
-    expect(dutyLabel({ duty_type: 'DTY', base_name: 'MKW' })).toBe('MKW');
-    expect(dutyLabel({ duty_type: 'TRX', base_name: 'CJN' })).toBe('TRX');
+  it('labels DUTY days with the base and other days with the duty type', () => {
+    expect(dutyLabel({ duty_type: 'DUTY', base_name: 'MKW' })).toBe('MKW');
+    expect(dutyLabel({ duty_type: 'TX', base_name: 'CJN' })).toBe('TX');
   });
 
   it('remaining is scheduled minus logged, never below zero', () => {
     expect(remainingDuties({ count_schedules: 6, count_logbooks: 6 })).toBe(0);
     expect(remainingDuties({ count_schedules: 5, count_logbooks: 2 })).toBe(3);
     expect(remainingDuties({ count_schedules: 1, count_logbooks: 3 })).toBe(0);
+  });
+
+  it('maps data duty codes to spec codes and passes others through', () => {
+    expect(specDutyCode('DTY')).toBe('DUTY');
+    expect(specDutyCode('RLV')).toBe('RL');
+    expect(specDutyCode('TRD')).toBe('TR');
+    expect(specDutyCode('TRX')).toBe('TX');
+    expect(specDutyCode('ULV')).toBe('UL');
+    expect(specDutyCode('SCK')).toBe('SCK');
   });
 });
 

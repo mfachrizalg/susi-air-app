@@ -12,7 +12,7 @@ export class SchedulesQueryDto {
 }
 
 export class LegendEntryDto {
-  @ApiProperty({ example: 'TRX' })
+  @ApiProperty({ example: 'TX' })
   code!: string;
 
   @ApiProperty({ example: 'Training' })
@@ -44,7 +44,7 @@ export class ScheduleDto {
   })
   base_color!: string;
 
-  @ApiProperty({ example: 'DTY' })
+  @ApiProperty({ example: 'DUTY' })
   duty_type!: string;
 
   @ApiProperty({
@@ -58,7 +58,7 @@ export class ScheduleDto {
 
   @ApiProperty({
     example: 'MKW',
-    description: 'base_name on DTY days, duty_type otherwise.',
+    description: 'base_name on DUTY days, duty_type otherwise.',
   })
   label!: string;
 

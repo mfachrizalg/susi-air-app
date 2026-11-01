@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataService } from '../../data/data.service.js';
 import { SchedulesDto } from './schedules.dto.js';
-import { dutyLabel, remainingDuties } from './schedule.rules.js';
+import { dutyLabel, remainingDuties, specDutyCode } from './schedule.rules.js';
 
 @Injectable()
 export class SchedulesService {
@@ -12,14 +12,20 @@ export class SchedulesService {
     return {
       year: Number(year),
       month: Number(month),
-      legend: [...this.data.legend],
+      legend: this.data.legend.map((entry) => ({
+        ...entry,
+        code: specDutyCode(entry.code),
+      })),
       schedules: this.data.schedules
         .filter((row) => row.duty_date.startsWith(prefix))
-        .map((row) => ({
-          ...row,
-          label: dutyLabel(row),
-          remaining: remainingDuties(row),
-        })),
+        .map((row) => {
+          const duty = { ...row, duty_type: specDutyCode(row.duty_type) };
+          return {
+            ...duty,
+            label: dutyLabel(duty),
+            remaining: remainingDuties(row),
+          };
+        }),
     };
   }
 }

@@ -15,7 +15,10 @@ void flightHours.load();
         <LimitCard v-for="card in flightHours.summary.cards" :key="card.key" :card="card" />
       </div>
       <p v-else-if="flightHours.error" role="alert" class="status-text">{{ flightHours.error }}</p>
-      <p v-else role="status" class="status-text">Loading hours…</p>
+      <div v-else role="status" class="limits">
+        <span class="sr-only">Loading hours…</span>
+        <span v-for="n in 4" :key="n" class="skeleton skeleton--card" aria-hidden="true" />
+      </div>
       <FlightHoursChart />
     </section>
 

@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://nest-production-f9b4.up.railway.app/:path*"
-    }
-  ]
-}

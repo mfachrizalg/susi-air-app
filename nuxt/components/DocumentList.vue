@@ -25,7 +25,10 @@ const remaining = (days: number) => {
     <h2 id="docs-title" class="section-title">My documents</h2>
     <div class="card">
       <p v-if="documents.error" role="alert" class="status-text">{{ documents.error }}</p>
-      <p v-else-if="!documents.data" role="status" class="status-text">Loading documents…</p>
+      <div v-else-if="!documents.data" role="status" class="docs__loading">
+        <span class="sr-only">Loading documents…</span>
+        <span v-for="n in 3" :key="n" class="skeleton skeleton--row" aria-hidden="true" />
+      </div>
       <p v-else-if="documents.data.documents.length === 0" class="status-text">No documents.</p>
       <ul v-else class="docs__list">
         <li v-for="doc in documents.data.documents" :key="doc.id" class="doc">
@@ -54,6 +57,12 @@ const remaining = (days: number) => {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.docs__loading {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .doc {

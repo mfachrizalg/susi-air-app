@@ -6,6 +6,7 @@ import { use } from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import VChart from 'vue-echarts';
 import { useFlightHoursStore, type Range } from '~/stores/flightHours';
+import { useToastStore } from '~/stores/toast';
 import { dayOfMonth, formatDate, formatHours } from '~/utils/format';
 
 use([BarChart, GridComponent, MarkLineComponent, TooltipComponent, SVGRenderer]);
@@ -22,6 +23,16 @@ const DANGER = '#E63757';
 const INIT_OPTIONS = { renderer: 'svg' } as const;
 
 const store = useFlightHoursStore();
+const toast = useToastStore();
+
+// Skeleton while a range loads. The previous summary stays in the store until the new one lands,
+// so compare its range with the requested one.
+const rangeLoading = computed(() => store.loading && store.summary?.range !== store.range);
+
+async function pickRange(next: Range) {
+  await store.load(next);
+  if (store.error) toast.show(store.error);
+}
 
 const projectedFrom = computed(() => {
   const first = store.summary?.points.find((point) => point.projected);
@@ -79,14 +90,18 @@ const option = computed<EChartsOption>(() => {
           type="button"
           class="toggle__btn"
           :aria-pressed="String(store.range === r.value)"
-          @click="store.load(r.value)"
+          @click="pickRange(r.value)"
         >
           {{ r.label }}
         </button>
       </div>
     </div>
 
-    <template v-if="store.summary">
+    <template v-if="rangeLoading">
+      <span class="skeleton chart__canvas" aria-hidden="true" />
+      <p role="status" class="sr-only">Loading flight hours trend…</p>
+    </template>
+    <template v-else-if="store.summary">
       <VChart :option="option" :init-options="INIT_OPTIONS" autoresize class="chart__canvas" />
       <ul class="chart__key">
         <li>

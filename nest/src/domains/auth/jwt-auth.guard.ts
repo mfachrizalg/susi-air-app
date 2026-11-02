@@ -11,8 +11,6 @@ import { IS_PUBLIC_KEY } from '../../common/public.decorator.js';
 import { TOKEN_COOKIE } from '../../config.js';
 import { SessionStore } from './session.store.js';
 
-export type AuthedRequest = Request & { sessionId: string };
-
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
@@ -41,12 +39,11 @@ export class JwtAuthGuard implements CanActivate {
     const sid = payload.jti;
     if (!sid || !this.sessions.isActive(sid))
       throw new UnauthorizedException('Session ended, sign in again');
-    (req as AuthedRequest).sessionId = sid;
     return true;
   }
 }
 
-function bearerToken(header: string | undefined): string | undefined {
+export function bearerToken(header: string | undefined): string | undefined {
   const [scheme, token] = header?.split(' ') ?? [];
   return scheme?.toLowerCase() === 'bearer' ? token : undefined;
 }

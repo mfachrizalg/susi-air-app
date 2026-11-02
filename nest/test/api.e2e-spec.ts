@@ -40,6 +40,16 @@ describe('root', () => {
 });
 
 describe('sessions', () => {
+  it('logout always returns 200 and clears the cookie, with no session or a forged one', async () => {
+    const none = await api().post('/auth/logout').expect(200);
+    expect(none.headers['set-cookie'][0]).toMatch(/^token=;/);
+    await api().post('/auth/logout').set('Cookie', 'token=forged').expect(200);
+    await api()
+      .post('/auth/logout')
+      .set('Authorization', 'Bearer forged')
+      .expect(200);
+  });
+
   it('every route except login and health needs a session', async () => {
     const routes = [
       '/pilot/me',

@@ -40,7 +40,13 @@ export class AuthService {
     };
   }
 
-  logout(sid: string): void {
-    this.sessions.close(sid);
+  async logout(token: string | undefined): Promise<void> {
+    if (!token) return;
+    try {
+      const { jti } = await this.jwt.verifyAsync<{ jti?: string }>(token);
+      if (jti) this.sessions.close(jti);
+    } catch {
+      // Expired or forged: there is no live session to end.
+    }
   }
 }

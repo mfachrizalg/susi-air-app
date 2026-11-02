@@ -31,7 +31,7 @@ const rangeLoading = computed(() => store.loading && store.summary?.range !== st
 
 async function pickRange(next: Range) {
   await store.load(next);
-  if (store.error) toast.show(store.error);
+  if (store.error) toast.show(store.error, 'error');
 }
 
 const projectedFrom = computed(() => {

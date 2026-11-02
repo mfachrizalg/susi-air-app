@@ -1,7 +1,8 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { createHash, timingSafeEqual } from 'node:crypto';
+import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
 import { type AppConfig, CONFIG } from '../../config.js';
+import { SessionStore } from './session.store.js';
 
 const digest = (value: string): Buffer =>
   createHash('sha256').update(value).digest();
@@ -19,6 +20,7 @@ export class AuthService {
   constructor(
     private readonly jwt: JwtService,
     @Inject(CONFIG) private readonly config: AppConfig,
+    private readonly sessions: SessionStore,
   ) {}
 
   async login(username: string, password: string): Promise<Session> {
@@ -27,12 +29,18 @@ export class AuthService {
     if (!userOk || !passOk)
       throw new UnauthorizedException('Invalid username or password');
 
-    const token = await this.jwt.signAsync({ sub: username });
+    const sid = randomUUID();
+    const token = await this.jwt.signAsync({ sub: username }, { jwtid: sid });
     const { iat, exp } = this.jwt.decode<{ iat: number; exp: number }>(token);
+    this.sessions.open(sid, exp * 1000);
     return {
       token,
       expiresAt: new Date(exp * 1000).toISOString(),
       maxAgeMs: (exp - iat) * 1000,
     };
+  }
+
+  logout(sid: string): void {
+    this.sessions.close(sid);
   }
 }

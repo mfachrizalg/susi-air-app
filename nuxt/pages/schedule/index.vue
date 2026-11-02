@@ -36,7 +36,7 @@ function pickMonth(month: number) {
 // Failed month loads toast too. The inline error stays on the page.
 async function changed(request: Promise<void>) {
   await request;
-  if (schedule.error) toast.show(schedule.error);
+  if (schedule.error) toast.show(schedule.error, 'error');
 }
 </script>
 

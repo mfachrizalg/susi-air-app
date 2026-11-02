@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { LoaderCircle } from 'lucide-vue-next';
 import type { components } from '~/types/api';
+import { useToastStore } from '~/stores/toast';
 
 definePageMeta({ layout: 'auth' });
 
 type LoginResult = components['schemas']['LoginResultDto'];
 
 const api = useNuxtApp().$api;
+const toast = useToastStore();
 const username = ref('');
 const password = ref('');
 const submitting = ref(false);
@@ -19,9 +22,12 @@ async function submit() {
       method: 'POST',
       body: { username: username.value, password: password.value },
     });
+    toast.show('Signed in', 'success');
     await navigateTo('/');
   } catch (err) {
-    error.value = (err as { data?: { message?: string } }).data?.message ?? 'Could not sign in. Try again.';
+    const message = (err as { data?: { message?: string } }).data?.message ?? 'Could not sign in. Try again.';
+    error.value = message;
+    toast.show(message, 'error');
   } finally {
     submitting.value = false;
   }
@@ -49,7 +55,10 @@ async function submit() {
         />
       </label>
       <p v-if="error" role="alert" class="login__error">{{ error }}</p>
-      <button type="submit" class="btn-primary login__submit" :disabled="submitting">Sign in</button>
+      <button type="submit" class="btn-primary login__submit" :disabled="submitting">
+        <LoaderCircle v-if="submitting" class="spin" :size="18" aria-hidden="true" />
+        {{ submitting ? 'Signing in…' : 'Sign in' }}
+      </button>
     </form>
   </section>
 </template>
@@ -118,10 +127,27 @@ async function submit() {
   width: 100%;
   margin-top: 8px;
   font-size: 16px;
+  gap: 8px;
 
   &:disabled {
     opacity: 0.6;
     cursor: wait;
+  }
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
   }
 }
 </style>

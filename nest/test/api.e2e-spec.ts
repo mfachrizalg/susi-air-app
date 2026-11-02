@@ -39,6 +39,35 @@ describe('root', () => {
   });
 });
 
+describe('sessions', () => {
+  it('every route except login and health needs a session', async () => {
+    const routes = [
+      '/pilot/me',
+      '/schedules?year=2026&month=05',
+      '/flight-hours',
+      '/flight-hours/summary',
+      '/documents',
+    ];
+    for (const route of routes) {
+      await api().get(route).expect(401);
+    }
+  });
+
+  it('logout ends the session, clears the cookie, and rejects the old token', async () => {
+    const { token, cookie } = await login();
+    const res = await api()
+      .post('/auth/logout')
+      .set('Cookie', cookie)
+      .expect(200);
+    expect(res.headers['set-cookie'][0]).toMatch(/^token=;/);
+    await api().get('/pilot/me').set('Cookie', cookie).expect(401);
+    await api()
+      .get('/pilot/me')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(401);
+  });
+});
+
 describe('auth', () => {
   it('login returns the token envelope and sets an httpOnly, SameSite=Strict cookie for 8h', async () => {
     const res = await api().post('/auth/login').send(credentials).expect(200);

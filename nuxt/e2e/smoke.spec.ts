@@ -24,6 +24,7 @@ test('bad credentials show the API message', async ({ page }) => {
   await page.getByLabel('Password').fill('wrong-password');
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'Invalid username or password' })).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: 'Invalid username or password' })).toBeVisible();
 });
 
 test('home shows pilot, limit cards, chart and documents', async ({ page }) => {
@@ -67,6 +68,14 @@ test('tapping day 15 opens the detail placeholder', async ({ page }) => {
   await openSchedule(page);
   await page.getByRole('link', { name: /^15 May 2026/ }).click();
   await expect(page.getByText('Detail page coming soon')).toBeVisible();
+});
+
+test('log out ends the session and blocks Home until sign-in', async ({ page }) => {
+  await signIn(page);
+  await page.getByRole('button', { name: 'Log out' }).click();
+  await expect(page).toHaveURL(/\/login$/);
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/login$/);
 });
 
 test('token cookie is HttpOnly and SameSite=Strict, and not readable from JavaScript', async ({ page }) => {

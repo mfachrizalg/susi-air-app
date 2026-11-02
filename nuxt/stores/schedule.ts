@@ -15,6 +15,8 @@ export const useScheduleStore = defineStore('schedule', () => {
 
   async function show(nextYear: number, nextMonth: number) {
     const id = ++latest;
+    // A different month must not keep showing the old grid while it loads.
+    if (year.value !== nextYear || month.value !== nextMonth) data.value = null;
     year.value = nextYear;
     month.value = nextMonth;
     loading.value = true;

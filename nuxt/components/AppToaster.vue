@@ -6,7 +6,7 @@ const toasts = useToastStore();
 
 <template>
   <div class="toaster" role="status" aria-live="polite">
-    <p v-for="item in toasts.items" :key="item.id" class="toast">{{ item.message }}</p>
+    <p v-for="item in toasts.items" :key="item.id" class="toast" :class="'toast--' + item.kind">{{ item.message }}</p>
   </div>
 </template>
 
@@ -28,10 +28,18 @@ const toasts = useToastStore();
   margin: 0;
   padding: 12px 16px;
   border-radius: $radius-control;
-  background: $color-primary;
   color: $color-card;
   box-shadow: $shadow-card;
   font-size: 14px;
   text-align: center;
+}
+
+// Darker than the tokens so white text passes WCAG AA (4.5:1).
+.toast--error {
+  background: #c81e3d;
+}
+
+.toast--success {
+  background: #17703f;
 }
 </style>

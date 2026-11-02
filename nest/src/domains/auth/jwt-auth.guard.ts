@@ -9,12 +9,16 @@ import { JwtService } from '@nestjs/jwt';
 import type { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../../common/public.decorator.js';
 import { TOKEN_COOKIE } from '../../config.js';
+import { SessionStore } from './session.store.js';
+
+export type AuthedRequest = Request & { sessionId: string };
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwt: JwtService,
     private readonly reflector: Reflector,
+    private readonly sessions: SessionStore,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -28,11 +32,16 @@ export class JwtAuthGuard implements CanActivate {
     const token =
       req.cookies?.[TOKEN_COOKIE] ?? bearerToken(req.headers.authorization);
     if (!token) throw new UnauthorizedException('Authentication required');
+    let payload: { jti?: string };
     try {
-      await this.jwt.verifyAsync(token);
+      payload = await this.jwt.verifyAsync<{ jti?: string }>(token);
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
+    const sid = payload.jti;
+    if (!sid || !this.sessions.isActive(sid))
+      throw new UnauthorizedException('Session ended, sign in again');
+    (req as AuthedRequest).sessionId = sid;
     return true;
   }
 }
